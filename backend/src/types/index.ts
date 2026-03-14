@@ -42,3 +42,37 @@ export interface MeResponseData {
     createdAt: Date
   }
 }
+
+export interface PresignedUrlResponse {
+  uploadUrl: string
+  key: string
+  expiresIn: number
+}
+
+export interface CreateVideoBody {
+  title: string
+  originalKey: string
+  fileSize?: number
+  webhookUrl?: string
+}
+
+export interface VideoResponse {
+  id: string
+  title: string
+  status: string
+  originalKey: string
+  fileSize: number | null
+  duration: number | null
+  webhookUrl: string | null
+  userId: string
+  outputs: OutputResponse[]
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface OutputResponse {
+  id: string
+  resolution: string
+  s3Key: string
+  fileSize: number | null
+}

@@ -1,13 +1,12 @@
 import { Router, Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 import { protect } from '../middleware/auth'
 import { AuthRequest, ApiResponse, AuthResponseData, MeResponseData } from '../types'
 import { env } from '../config/env'
 
 const router = Router()
-const prisma = new PrismaClient()
 
 // helper — generate JWT
 const generateToken = (id: string, email: string): string => {
