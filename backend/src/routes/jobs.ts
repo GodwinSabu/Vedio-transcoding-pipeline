@@ -1,11 +1,11 @@
 import { Router, Response } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 import { protect } from '../middleware/auth'
 import { AuthRequest, ApiResponse } from '../types'
 import { transcodeQueue } from '../config/queue'
 
 const router = Router()
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
 // GET /api/jobs/:jobId — get single job status
 router.get(
@@ -15,7 +15,7 @@ router.get(
     // find job in Postgres — verify it belongs to this user via video relation
     const job = await prisma.job.findFirst({
       where: {
-        id: req.params.jobId,
+        id: req.params.jobId as string,
         video: { userId: req.user!.id },
       },
       include: {
@@ -64,13 +64,13 @@ router.get(
         },
         bullState,
         video: {
-          id: job.video.id,
+          id: job.video.id as string, 
           title: job.video.title,
           status: job.video.status,
           outputs: job.video.outputs,
         },
       },
-    } as ApiResponse)
+    } as any)
   }
 )
 
@@ -107,7 +107,7 @@ router.get(
           totalPages: Math.ceil(total / limit),
         },
       },
-    } as ApiResponse)
+    } as any)
   }
 )
 
@@ -136,7 +136,7 @@ router.get(
           total: waiting + active,
         },
       },
-    } as ApiResponse)
+    } as any)
   }
 )
 
