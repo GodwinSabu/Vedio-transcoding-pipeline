@@ -6,7 +6,7 @@ import fs from 'fs'
 const execFileAsync = promisify(execFile)
 
 // resolution config — width x height and bitrate
-const RESOLUTION_CONFIG: Record
+const RESOLUTION_CONFIG: Record<
   string,
   { scale: string; videoBitrate: string; audioBitrate: string }
 > = {

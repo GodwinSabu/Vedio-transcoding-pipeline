@@ -23,6 +23,18 @@ services:
       - redis_data:/data
     restart: unless-stopped
 
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    container_name: videotranscoder_worker
+    env_file:
+      - ./worker/.env
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   redis_data:

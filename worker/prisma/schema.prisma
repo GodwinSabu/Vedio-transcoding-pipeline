@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  videos Video[]
+
+  @@map("users")
+}
+
+model Video {
+  id          String      @id @default(cuid())
+  title       String
+  originalKey String
+  status      VideoStatus @default(PENDING)
+  fileSize    Int?
+  duration    Float?
+  webhookUrl  String?
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outputs     Output[]
+  jobs        Job[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("videos")
+}
+
+model Output {
+  id         String   @id @default(cuid())
+  resolution String
+  s3Key      String
+  fileSize   Int?
+  videoId    String
+  video      Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@map("outputs")
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  bullJobId   String?
+  status      JobStatus @default(QUEUED)
+  progress    Int       @default(0)
+  errorMsg    String?
+  videoId     String
+  video       Video     @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("jobs")
+}
+
+enum VideoStatus {
+  PENDING
+  QUEUED
+  PROCESSING
+  DONE
+  FAILED
+} 
+
+enum JobStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
